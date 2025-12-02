@@ -11,6 +11,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
+import jakarta.persistence.OneToMany;
+import java.util.Date;
+import java.util.List;
 
 import com.Airlink.AirticketingSystem.model.enums.Gender;
 import com.Airlink.AirticketingSystem.model.enums.UserRole;
@@ -38,6 +43,22 @@ public class User {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "location_id")
     private Location location;
+
+    @Column(nullable = false)
+    private String password;
+
+    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT true")
+    private Boolean isActive = true;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(nullable = false, updatable = false)
+    private Date createdAt = new Date();
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date updatedAt = new Date();
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<RefreshToken> refreshTokens;
 
     public Long getId() {
         return id;
@@ -93,5 +114,45 @@ public class User {
 
     public void setLocation(Location location) {
         this.location = location;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public Boolean getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(Boolean isActive) {
+        this.isActive = isActive;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public List<RefreshToken> getRefreshTokens() {
+        return refreshTokens;
+    }
+
+    public void setRefreshTokens(List<RefreshToken> refreshTokens) {
+        this.refreshTokens = refreshTokens;
     }
 }
