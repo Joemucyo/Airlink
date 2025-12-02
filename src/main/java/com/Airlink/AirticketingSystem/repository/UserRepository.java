@@ -21,6 +21,12 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Page<User> findAllByRole(UserRole role, Pageable pageable);
     Page<User> findAllByLocation_Id(Long locationId, Pageable pageable);
     
+    // Password reset query
+    Optional<User> findByPasswordResetToken(String passwordResetToken);
+    
+    // Email verification query
+    Optional<User> findByVerificationToken(String verificationToken);
+    
     // Custom query to find users by province code
     @Query("SELECT u FROM User u WHERE u.location.type = :type AND u.location.code = :code")
     Page<User> findByLocationTypeAndCode(@Param("type") LocationType type, @Param("code") String code, Pageable pageable);

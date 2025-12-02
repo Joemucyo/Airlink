@@ -14,6 +14,7 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import jakarta.persistence.OneToMany;
+import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 
@@ -59,6 +60,25 @@ public class User {
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<RefreshToken> refreshTokens;
+
+    // Password Reset Fields
+    private String passwordResetToken;
+    
+    private Instant passwordResetTokenExpiry;
+
+    // Email Verification Fields
+    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT false")
+    private Boolean emailVerified = false;
+
+    private String verificationToken;
+
+    private Instant verificationTokenExpiry;
+
+    // Account Lockout Fields
+    @Column(nullable = false, columnDefinition = "INTEGER DEFAULT 0")
+    private Integer failedLoginAttempts = 0;
+
+    private Instant lockoutUntil;
 
     public Long getId() {
         return id;
@@ -154,5 +174,61 @@ public class User {
 
     public void setRefreshTokens(List<RefreshToken> refreshTokens) {
         this.refreshTokens = refreshTokens;
+    }
+
+    public String getPasswordResetToken() {
+        return passwordResetToken;
+    }
+
+    public void setPasswordResetToken(String passwordResetToken) {
+        this.passwordResetToken = passwordResetToken;
+    }
+
+    public Instant getPasswordResetTokenExpiry() {
+        return passwordResetTokenExpiry;
+    }
+
+    public void setPasswordResetTokenExpiry(Instant passwordResetTokenExpiry) {
+        this.passwordResetTokenExpiry = passwordResetTokenExpiry;
+    }
+
+    public Boolean getEmailVerified() {
+        return emailVerified;
+    }
+
+    public void setEmailVerified(Boolean emailVerified) {
+        this.emailVerified = emailVerified;
+    }
+
+    public String getVerificationToken() {
+        return verificationToken;
+    }
+
+    public void setVerificationToken(String verificationToken) {
+        this.verificationToken = verificationToken;
+    }
+
+    public Instant getVerificationTokenExpiry() {
+        return verificationTokenExpiry;
+    }
+
+    public void setVerificationTokenExpiry(Instant verificationTokenExpiry) {
+        this.verificationTokenExpiry = verificationTokenExpiry;
+    }
+
+    public Integer getFailedLoginAttempts() {
+        return failedLoginAttempts;
+    }
+
+    public void setFailedLoginAttempts(Integer failedLoginAttempts) {
+        this.failedLoginAttempts = failedLoginAttempts;
+    }
+
+    public Instant getLockoutUntil() {
+        return lockoutUntil;
+    }
+
+    public void setLockoutUntil(Instant lockoutUntil) {
+        this.lockoutUntil = lockoutUntil;
     }
 }

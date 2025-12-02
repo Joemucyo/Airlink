@@ -23,20 +23,22 @@ public class UserRequestDTO {
     
     @NotNull(message = "Role is required")
     private UserRole role;
-    
+
     private Long locationId;
-    
+
+    @NotBlank(message = "Password is required")
+    private String password;
+
     // Default constructor
-    public UserRequestDTO() {}
-    
-    // Constructor with all fields
-    public UserRequestDTO(String fullName, String email, String phone, Gender gender, UserRole role, Long locationId) {
+    public UserRequestDTO() {}    // Constructor with all fields
+    public UserRequestDTO(String fullName, String email, String phone, Gender gender, UserRole role, Long locationId, String password) {
         this.fullName = fullName;
         this.email = email;
         this.phone = phone;
         this.gender = gender;
         this.role = role;
         this.locationId = locationId;
+        this.password = password;
     }
     
     // Getters and Setters
@@ -83,8 +85,16 @@ public class UserRequestDTO {
     public Long getLocationId() {
         return locationId;
     }
-    
+
     public void setLocationId(Long locationId) {
         this.locationId = locationId;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

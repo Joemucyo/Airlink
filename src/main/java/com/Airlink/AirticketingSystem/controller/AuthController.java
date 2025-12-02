@@ -3,9 +3,13 @@ package com.Airlink.AirticketingSystem.controller;
 import com.Airlink.AirticketingSystem.dto.AuthRegisterRequest;
 import com.Airlink.AirticketingSystem.dto.AuthResponse;
 import com.Airlink.AirticketingSystem.dto.ChangePasswordRequest;
+import com.Airlink.AirticketingSystem.dto.ForgotPasswordRequest;
 import com.Airlink.AirticketingSystem.dto.LoginRequest;
 import com.Airlink.AirticketingSystem.dto.RefreshTokenRequest;
+import com.Airlink.AirticketingSystem.dto.ResendVerificationRequest;
+import com.Airlink.AirticketingSystem.dto.ResetPasswordRequest;
 import com.Airlink.AirticketingSystem.dto.UserResponseDTO;
+import com.Airlink.AirticketingSystem.dto.VerifyEmailRequest;
 import com.Airlink.AirticketingSystem.service.AuthService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,5 +61,33 @@ public class AuthController {
         String email = authentication.getName();
         authService.changePassword(email, request);
         return ResponseEntity.noContent().build();
+    }
+
+    // ============ Password Reset Endpoints ============
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<String> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
+        authService.forgotPassword(request);
+        return ResponseEntity.ok("Password reset link has been sent to your email");
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<String> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+        authService.resetPassword(request);
+        return ResponseEntity.ok("Password has been reset successfully");
+    }
+
+    // ============ Email Verification Endpoints ============
+
+    @PostMapping("/verify-email")
+    public ResponseEntity<String> verifyEmail(@Valid @RequestBody VerifyEmailRequest request) {
+        authService.verifyEmail(request);
+        return ResponseEntity.ok("Email has been verified successfully");
+    }
+
+    @PostMapping("/resend-verification")
+    public ResponseEntity<String> resendVerification(@Valid @RequestBody ResendVerificationRequest request) {
+        authService.resendVerification(request);
+        return ResponseEntity.ok("Verification email has been sent");
     }
 }

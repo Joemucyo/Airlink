@@ -4,10 +4,12 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.Airlink.AirticketingSystem.dto.LocationResponseDTO;
+import com.Airlink.AirticketingSystem.dto.UserRequestDTO;
 import com.Airlink.AirticketingSystem.dto.UserResponseDTO;
 import com.Airlink.AirticketingSystem.exception.BadRequestException;
 import com.Airlink.AirticketingSystem.exception.ResourceNotFoundException;
@@ -32,6 +34,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public UserResponseDTO createUser(String fullName, String email, String phone,
@@ -59,6 +64,40 @@ public class UserServiceImpl implements UserService {
         user.setGender(gender);
         user.setRole(role);
         user.setLocation(location);
+
+        User savedUser = userRepository.save(user);
+        return convertToDTO(savedUser);
+    }
+
+    /**
+     * Create user from UserRequestDTO with password encryption (for admin user creation)
+     */
+    public UserResponseDTO createUserWithPassword(UserRequestDTO request) {
+        // Check if email already exists
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new BadRequestException("Email already exists: " + request.getEmail());
+        }
+
+        // Validate location is a village
+        Location location = null;
+        if (request.getLocationId() != null) {
+            location = locationRepository.findById(request.getLocationId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Location", request.getLocationId()));
+            
+            if (location.getType() != LocationType.VILLAGE) {
+                throw new BadRequestException("Location must be a village");
+            }
+        }
+
+        User user = new User();
+        user.setFullName(request.getFullName());
+        user.setEmail(request.getEmail());
+        user.setPhone(request.getPhone());
+        user.setGender(request.getGender());
+        user.setRole(request.getRole());
+        user.setLocation(location);
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setIsActive(true);
 
         User savedUser = userRepository.save(user);
         return convertToDTO(savedUser);
